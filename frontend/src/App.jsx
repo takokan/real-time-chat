@@ -1,23 +1,52 @@
 import Navbar from "./components/Navbar";
-import { Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Setting from "./pages/Setting";
+import { useAuthStore } from "./store/useAuthStore";
+import { useEffect } from "react";
+import { Toaster } from 'react-hot-toast';
+
 
 function App() {
+  const { authUser, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  console.log({ authUser });
+
   return (
     <>
-      <div className="flex flex-col items-center text-center text-white m-4 p-4 text-3xl">
+      <div className="min-h-screen">
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<SignIn />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Setting />} />
+          <Route
+            path="/"
+            element={authUser ? <Home /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/signup"
+            element={!authUser ? <SignIn /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/login"
+            element={!authUser ? <Login /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/profile"
+            element={authUser ? <Profile /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/settings"
+            element={authUser ? <Setting /> : <Navigate to="/login" />}
+          />
         </Routes>
+
+        
       </div>
     </>
   );
