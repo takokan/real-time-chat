@@ -1,42 +1,55 @@
-import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
+import { LogOut, MessageSquare, Settings, User } from "lucide-react";
 
-function Navbar() {
-  const { authUser, logout} = useAuthStore();
-  const navigate = useNavigate();
+const Navbar = () => {
+  const { logout, authUser } = useAuthStore();
 
   return (
-    <div className="navbar bg-base-300">
-      <div className="navbar-start">
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className=" btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <header
+      className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
+    backdrop-blur-lg bg-base-100/80"
+    >
+      <div className="container mx-auto px-4 h-16">
+        <div className="flex items-center justify-between h-full">
+          <div className="flex items-center gap-8">
+            <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-all">
+              <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                <MessageSquare className="w-5 h-5 text-primary" />
+              </div>
+              <h1 className="text-lg font-bold">Smash</h1>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              to={"/settings"}
+              className={`
+              btn btn-sm gap-2 transition-colors
+              
+              `}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />
-            </svg>
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Settings</span>
+            </Link>
+
+            {authUser && (
+              <>
+                <Link to={"/profile"} className={`btn btn-sm gap-2`}>
+                  <User className="size-5" />
+                  <span className="hidden sm:inline">Profile</span>
+                </Link>
+
+                <button className="flex gap-2 items-center" onClick={logout}>
+                  <LogOut className="size-5" />
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
-        <a className="btn btn-ghost text-xl">Smash</a>
       </div>
-    {authUser ?
-      <div className="navbar-end">
-        <button className="btn" onClick={navigate("/profile")}>Profile</button>
-        <button className="btn" onClick={navigate("/settings")}>Settings</button>
-        <button className="btn" onClick={logout}>Logout</button>
-      </div>
-      : <div className="navbar-end"></div>}
-    </div>
+    </header>
   );
-}
-
+};
 export default Navbar;
